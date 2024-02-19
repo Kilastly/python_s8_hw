@@ -21,26 +21,28 @@ def creat_row():
     address = input_address()
     return f'{last_name} {first_name} {middle_name}: {phone}\n{address}\n\n'
 
-def add_row():
+def add_row(number):
     # with open('data.txt', 'a', encoding= 'utf8') as file:
     #     file.write(creat_row())
     contact_str = creat_row()
-    with open('data_1.txt', 'a', encoding= 'utf8') as file:
+    data, number = data_file()
+    with open(f'data_{number}.txt', 'a', encoding= 'utf8') as file:
         file.write(contact_str)
+        print('Данные добавлены!')
 
-def print_data():
+def print_data(number):
     # with open('data.txt', 'r', encoding= 'utf8') as file:
     #    print(file.read())
-    with open('data_1.txt', 'r', encoding= 'utf8') as file:
+    with open(f'data_{number}.txt', 'r', encoding= 'utf8') as file:
         data_str = file.read()
-
+    print(f'data_{number}.txt')
     contacts_list = data_str.rstrip().split('\n\n')
     for n, contact in enumerate(contacts_list, 1):
 
         print(n, contact)
         # print(*contact)
 
-def search_contact():
+def search_contact(number):
     print('Поиск:\n'
             '1. по фамилии\n'
             '2. по имени\n'
@@ -60,7 +62,7 @@ def search_contact():
     i_var = int(var) - 1
  
     serch = input('введите данные для поиска: ').title()
-    with open('data_1.txt', 'r', encoding= 'utf8') as file:
+    with open(f'data_{number}.txt', 'r', encoding= 'utf8') as file:
         data_str = file.read()
 
     contacts_list = data_str.rstrip().split('\n\n')
@@ -76,22 +78,44 @@ def print_file():
     for i in range(1,3):
         with open(f'data_{i}.txt', 'r', encoding='utf-8') as file:
             data = file.readlines()
-            print(f'Вы работает с {i} -м файлом:\n'
-                  f'{''.joing(data)}')
+            print(f'Содержимое {i}-го файла:\n'
+                  f'{''.join(data)}')
             print()
 
 def choice_number_file():
-    print_file()
+    # print_file()
     number = int(input('Выберете файл, с которым вы хотите работать\n'
-                       'Введите цифту 1 или 2'))
-    while number != 1 or number != 2:
+                       'Введите цифту 1 или 2: '))
+    while number < 1 or number > 2:
         number = int(input('Ошибка, не найден файл\n'
-                       'Введите цифту 1 или 2'))
-        return number
+                       'Введите цифту 1 или 2: '))
+    return number
+    
+def data_file():
+    number = choice_number_file()
+    with open(f'data_{number}.txt', 'r', encoding='utf-8') as file:
+        data = file.readlines()
+    return data, number
+
+def transfer(number):
+    with open(f'data_{number}.txt', 'r', encoding='utf-8') as file:
+        print_data()
+        # data_str = file.read()
+        contacts_list = file.read().rstrip().split('\n\n')
+        num = (input('Введите номер контакта для переноса: '))
+        while int(num) not in range(1, len(contacts_list)+1):
+            num = (input('Ошибка! Введите номер контакта для переноса: '))
+        
+
+
+    
+
+
 
 
 def ui():
-    with open('data_1.txt', 'a', encoding= 'utf8'):
+    number = choice_number_file()
+    with open(f'data_{number}.txt', 'r', encoding='utf-8'):
         pass
     var = None
     while var != 5:
@@ -99,7 +123,7 @@ def ui():
             '1. Добавить контакт\n'
             '2. Показать все контакты\n'
             '3. Поиск контакта\n'
-            '4. Выбор файла для работы\n'
+            '4. Перенос контакта\n'
             '5. Выход'
             )
         print()
@@ -109,19 +133,19 @@ def ui():
                 '1. Добавить контакт\n'
                 '2. Показать все контакты\n'
                 '3. Поиск контакта\n'
-                '4. Выбор файла для работы\n'
+                '4. Перенос контакта\n'
                 '5. Выход\n'
                 )
         print()
         match var:
             case '1':
-                add_row()
+                add_row(number)
             case '2':
-                print_data()
+                print_data(number)
             case '3':
-                search_contact()
+                search_contact(number)
             case '4':
-                choice_number_file()
+                transfer(number)
             case '5':
                 print('До новых встреч!')
                 break
