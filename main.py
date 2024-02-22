@@ -99,13 +99,22 @@ def data_file():
 
 def transfer(number):
     with open(f'data_{number}.txt', 'r', encoding='utf-8') as file:
-        print_data()
+        print_data(number)
         # data_str = file.read()
         contacts_list = file.read().rstrip().split('\n\n')
-        num = (input('Введите номер контакта для переноса: '))
+        num = (input('Введите номер контакта для копирования: '))
         while int(num) not in range(1, len(contacts_list)+1):
-            num = (input('Ошибка! Введите номер контакта для переноса: '))
-        # открыть второй файл в режиме 'a' и скопировать нужную строку
+            num = (input('Ошибка! Введите номер контакта для копирования: '))
+        for n, contact in enumerate(contacts_list, 1):
+            if n == int(num):
+                if number == 1:
+                    number_to_transfer = 2
+                elif number == 2:
+                    number_to_transfer = 1
+                with open(f'data_{number_to_transfer}.txt', 'a', encoding='utf-8') as file:
+                    file.write(contact)
+                    print('Данные скопированны!') 
+        
 
 
     
